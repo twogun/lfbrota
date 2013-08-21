@@ -6,6 +6,6 @@
 	<item
 		android:state_focused="true"
 		android:drawable="@drawable/calendar_bg_orange" /> <!-- focused -->
-	<item
-		android:drawable="@drawable/calendar_tile_small" /> <!-- default -->
+	<item 
+		android:drawable="@drawable/calendar_tile_small"/> <!-- default -->
 </selector>

@@ -6,13 +6,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.PorterDuff.Mode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,16 +17,19 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.smorgasbord.lfbrota.R;
+import com.smorgasbord.lfbrota.rota.DayRenderer;
+import com.smorgasbord.lfbrota.rota.LFBRota;
 
-public class MonthGridAdapter extends BaseAdapter implements OnClickListener
+public class RotaGridAdapter extends BaseAdapter implements OnClickListener
 	{
 		private static final String tag = "GridCellAdapter";
 		private final Context _context;
 
-		private final List<String> list;
+		private DayRenderer dayRenderer;
+		
+		private final List<Date> dates;
 		private static final int DAY_OFFSET = 1;
 		private final String[] weekdays = new String[]{"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 		private final String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
@@ -40,19 +40,18 @@ public class MonthGridAdapter extends BaseAdapter implements OnClickListener
 		private int currentDayOfMonth;
 		private int currentWeekDay;
 		private Button gridcell;
-		private TextView num_events_per_day;
 		
-		private final HashMap eventsPerMonthMap;
 		private final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MMM-yyyy");
 
 		// Days in Current Month
-		public MonthGridAdapter(Context context, int textViewResourceId, int month, int year)
+		public RotaGridAdapter(Context context, int textViewResourceId, int month, int year)
 			{
 				super();
 				this._context = context;
-				this.list = new ArrayList<String>();
+				this.dates = new ArrayList<Date>();
 				this.month = month;
 				this.year = year;
+				this.dayRenderer = new DayRenderer(new LFBRota());
 
 				Log.d(tag, "==> Passed in Date FOR Month: " + month + " " + "Year: " + year);
 				Calendar calendar = Calendar.getInstance();
@@ -65,8 +64,6 @@ public class MonthGridAdapter extends BaseAdapter implements OnClickListener
 				// Print Month
 				printMonth(month, year);
 
-				// Find Number of Events
-				eventsPerMonthMap = findNumberOfEventsPerMonth(year, month);
 			}
 		private String getMonthAsString(int i)
 			{
@@ -83,15 +80,15 @@ public class MonthGridAdapter extends BaseAdapter implements OnClickListener
 				return daysOfMonth[i];
 			}
 
-		public String getItem(int position)
+		public Date getItem(int position)
 			{
-				return list.get(position);
+				return dates.get(position);
 			}
 
 		@Override
 		public int getCount()
 			{
-				return list.size();
+				return dates.size();
 			}
 
 		/**
@@ -106,7 +103,6 @@ public class MonthGridAdapter extends BaseAdapter implements OnClickListener
 				// The number of days to leave blank at
 				// the start of this month.
 				int trailingSpaces = 0;
-				int leadSpaces = 0;
 				int daysInPrevMonth = 0;
 				int prevMonth = 0;
 				int prevYear = 0;
@@ -170,58 +166,24 @@ public class MonthGridAdapter extends BaseAdapter implements OnClickListener
 				for (int i = 0; i < trailingSpaces; i++)
 					{
 						Log.d(tag, "PREV MONTH:= " + prevMonth + " => " + getMonthAsString(prevMonth) + " " + String.valueOf((daysInPrevMonth - trailingSpaces + DAY_OFFSET) + i));
-						list.add(String.valueOf((daysInPrevMonth - trailingSpaces + DAY_OFFSET) + i) + "-GREY" + "-" + getMonthAsString(prevMonth) + "-" + prevYear);
+						dates.add(new Date(this.year, prevMonth, (daysInPrevMonth - trailingSpaces + DAY_OFFSET) + i));
 					}
 
 				// Current Month Days
 				for (int i = 1; i <= daysInMonth; i++)
 					{
 						Log.d(currentMonthName, String.valueOf(i) + " " + getMonthAsString(currentMonth) + " " + yy);
-						if (i == getCurrentDayOfMonth())
-							{
-								list.add(String.valueOf(i) + "-BLUE" + "-" + getMonthAsString(currentMonth) + "-" + yy);
-							}
-						else
-							{
-								list.add(String.valueOf(i) + "-WHITE" + "-" + getMonthAsString(currentMonth) + "-" + yy);
-							}
+						
+						dates.add(new Date(this.year, currentMonth, i));
+						
 					}
 
 				// Leading Month days
-				for (int i = 0; i < list.size() % 7; i++)
+				for (int i = 0; i < dates.size() % 7; i++)
 					{
 						Log.d(tag, "NEXT MONTH:= " + getMonthAsString(nextMonth));
-						list.add(String.valueOf(i + 1) + "-GREY" + "-" + getMonthAsString(nextMonth) + "-" + nextYear);
+						dates.add(new Date(this.year, nextMonth,  i + 1));
 					}
-			}
-
-		/**
-		 * NOTE: YOU NEED TO IMPLEMENT THIS PART Given the YEAR, MONTH, retrieve
-		 * ALL entries from a SQLite database for that month. Iterate over the
-		 * List of All entries, and get the dateCreated, which is converted into
-		 * day.
-		 * 
-		 * @param year
-		 * @param month
-		 * @return
-		 */
-		private HashMap findNumberOfEventsPerMonth(int year, int month)
-			{
-				HashMap map = new HashMap<String, Integer>();
-				// DateFormat dateFormatter2 = new DateFormat();
-				//						
-				// String day = dateFormatter2.format("dd", dateCreated).toString();
-				//
-				// if (map.containsKey(day))
-				// {
-				// Integer val = (Integer) map.get(day) + 1;
-				// map.put(day, val);
-				// }
-				// else
-				// {
-				// map.put(day, 1);
-				// }
-				return map;
 			}
 
 		@Override
@@ -235,55 +197,24 @@ public class MonthGridAdapter extends BaseAdapter implements OnClickListener
 			{
 				View row = convertView;
 				if (row == null)
-					{
-						LayoutInflater inflater = (LayoutInflater) _context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-						row = inflater.inflate(R.layout.calendar_day_gridcell, parent, false);
-					}
+				{
+					LayoutInflater inflater = (LayoutInflater) _context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+					row = inflater.inflate(R.layout.calendar_day_gridcell, parent, false);
+				}
 
 				// Get a reference to the Day gridcell
 				gridcell = (Button) row.findViewById(R.id.calendar_day_gridcell);
 				gridcell.setOnClickListener(this);
-
-				// ACCOUNT FOR SPACING
-
-				Log.d(tag, "Current Day: " + getCurrentDayOfMonth());
-				String[] day_color = list.get(position).split("-");
-				String theday = day_color[0];
-				String themonth = day_color[2];
-				String theyear = day_color[3];
-				if ((!eventsPerMonthMap.isEmpty()) && (eventsPerMonthMap != null))
-					{
-						if (eventsPerMonthMap.containsKey(theday))
-							{
-								num_events_per_day = (TextView) row.findViewById(R.id.num_events_per_day);
-								Integer numEvents = (Integer) eventsPerMonthMap.get(theday);
-								num_events_per_day.setText(numEvents.toString());
-							}
-					}
-
-				// Set the Day GridCell
-				gridcell.setText(theday);
-				gridcell.setTag(theday + "-" + themonth + "-" + theyear);
-				Log.d(tag, "Setting GridCell " + theday + "-" + themonth + "-" + theyear);
-
 				
-				if (day_color[1].equals("GREY"))
-					{
-						gridcell.setTextColor(Color.LTGRAY);
+				// Set the Day GridCell
+				Calendar cal = Calendar.getInstance();
+				Date date = dates.get(position);
+			    cal.setTime(date);
+
+				gridcell.setText(cal.get(Calendar.DAY_OF_MONTH) + "");
+				gridcell.setTextColor(Color.BLACK);
+				gridcell.setBackgroundColor(dayRenderer.getDayColour(date));
 						
-					}
-				if (day_color[1].equals("WHITE"))
-					{
-						gridcell.setTextColor(Color.WHITE);
-					}
-				if (day_color[1].equals("BLUE"))
-					{
-						//gridcell.setTextColor(_context.getResources().getColor(R.color.static_text_color));
-						gridcell.setTextColor(Color.RED);
-						gridcell.setBackgroundColor(Color.GREEN);
-						gridcell.setBackgroundResource(0);
-						//gridcell.getBackground().setColorFilter(Color.GREEN, Mode.LIGHTEN);
-					}
 				return row;
 			}
 		@Override
