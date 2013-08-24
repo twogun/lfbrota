@@ -70,11 +70,6 @@ public class RotaGridAdapter extends BaseAdapter implements OnClickListener
 				return months[i];
 			}
 
-		private String getWeekDayAsString(int i)
-			{
-				return weekdays[i];
-			}
-
 		private int getNumberOfDaysOfMonth(int i)
 			{
 				return daysOfMonth[i];
@@ -153,7 +148,7 @@ public class RotaGridAdapter extends BaseAdapter implements OnClickListener
 				int currentWeekDay = cal.get(Calendar.DAY_OF_WEEK) - 1;
 				trailingSpaces = currentWeekDay;
 
-				Log.d(tag, "Week Day:" + currentWeekDay + " is " + getWeekDayAsString(currentWeekDay));
+				Log.d(tag, "Week Day:" + currentWeekDay + " is " + currentWeekDay);
 				Log.d(tag, "No. Trailing space to Add: " + trailingSpaces);
 				Log.d(tag, "No. of Days in Previous Month: " + daysInPrevMonth);
 

@@ -16,6 +16,8 @@ import android.widget.GridView;
 import com.smorgasbord.lfbrota.R;
 import com.smorgasbord.lfbrota.adapters.DayLabelAdapter;
 import com.smorgasbord.lfbrota.adapters.RotaGridAdapter;
+import com.smorgasbord.lfbrota.adapters.RotaGridDateTimeAdapter;
+import com.smorgasbord.lfbrota.rota.MonthView;
 
 public class CViewListGridActivity extends Activity {
 
@@ -40,8 +42,9 @@ public class CViewListGridActivity extends Activity {
 		dayName.setAdapter(dayLabelAdapter);
 		
 		GridView calendarEntries = (GridView) this.findViewById(R.id.calendarEntries);
-		BaseAdapter gridAdapter = new RotaGridAdapter(this, R.id.calendar_day_gridcell, 
-				selectedCalendar.get(Calendar.MONTH) + 1, selectedCalendar.get(Calendar.YEAR));
+		MonthView monthView = new MonthView(selectedCalendar);
+		
+		BaseAdapter gridAdapter = new RotaGridDateTimeAdapter(this, R.id.calendar_day_gridcell, monthView.getDates());
 		gridAdapter.notifyDataSetChanged();
 		calendarEntries.setAdapter(gridAdapter);		
 		
