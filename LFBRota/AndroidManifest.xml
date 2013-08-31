@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="9"
+        android:minSdkVersion="11"
         android:targetSdkVersion="18" />
 
     <application
@@ -39,6 +39,32 @@
             android:name="com.smorgasbord.lfbrota.activities.CViewListGridActivity"
             android:label="@string/title_activity_cview_list_grid" >
         </activity>
+        <receiver android:name="com.smorgasbord.lfbrota.widget.HelloWorldWidget" android:label="@string/widget_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <meta-data android:name="android.appwidget.provider"
+                    android:resource="@xml/widget" />
+            </intent-filter>
+        </receiver>
+        
+               <!-- The widget provider -->
+        <receiver android:name="WeatherWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <!-- This specifies the widget provider info -->
+            <meta-data android:name="android.appwidget.provider"
+                    android:resource="@xml/widgetinfo" />
+        </receiver>
+
+        <!-- The service serving the RemoteViews to the collection widget -->
+        <service android:name="WeatherWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false" />
+
+        <!-- The content provider serving the (fake) weather data -->
+        <provider android:name="WeatherDataProvider"
+              android:authorities="com.example.android.weatherlistwidget.provider" />
     </application>
 
 </manifest>

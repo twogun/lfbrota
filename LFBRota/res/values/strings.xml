@@ -7,11 +7,19 @@
     <string name="action_exit">Exit</string>
     <string name="action_altlayout">Test Layout</string>
     
+    <string name="widget_name">Rota</string>
+    
     <string name="hello_world">Hello world!</string>
     <string name="cal_previous">Previous</string>
     <string name="cal_current">Current</string>
     <string name="cal_next">Next</string>
     <string name="title_activity_help">HelpActivity</string>
     <string name="title_activity_cview_list_grid">CViewListGridActivity</string>
+    
+    <!-- Weather widget example -->
+    <string name="toast_format_string">%1$s!</string>
+    <string name="item_format_string">%1$d\u00B0 on %2$s</string>
+    <string name="header_format_string">%1$d\u00B0 in %2$s</string>
+    <string name="city_name">San Francisco</string>
 
 </resources>
