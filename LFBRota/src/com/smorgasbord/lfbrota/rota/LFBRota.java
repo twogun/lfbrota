@@ -23,12 +23,12 @@ public class LFBRota extends RotaImpl {
 			List<RotaEntry> entries = new ArrayList<RotaEntry>();
 			entries.add(new RotaEntry("White Day 1", Color.WHITE));
 			entries.add(new RotaEntry("White Day 2", Color.WHITE));
-			entries.add(new RotaEntry("Red Day 1", Color.RED));
-			entries.add(new RotaEntry("Red Day 2", Color.RED));
-			entries.add(new RotaEntry("Blue Day 1", Color.BLUE));
-			entries.add(new RotaEntry("Blue Day 2", Color.BLUE));
-			entries.add(new RotaEntry("Green Day 1", Color.GREEN));
-			entries.add(new RotaEntry("Green Day 2", Color.GREEN));
+			entries.add(new RotaEntry("Red Day 1", Color.parseColor("#FF4444")));
+			entries.add(new RotaEntry("Red Day 2", Color.parseColor("#FF4444")));
+			entries.add(new RotaEntry("Blue Day 1", Color.parseColor("#33B5E5")));  
+			entries.add(new RotaEntry("Blue Day 2", Color.parseColor("#33B5E5")));  
+			entries.add(new RotaEntry("Green Day 1", Color.parseColor("#99CC00")));
+			entries.add(new RotaEntry("Green Day 2", Color.parseColor("#99CC00")));
 			this.setEntries(entries);
 			
 		} catch (ParseException e) {
