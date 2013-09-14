@@ -3,9 +3,9 @@
     android:minWidth="280dp"
     android:minHeight="180dp"
     android:updatePeriodMillis="1800000"
-    android:initialLayout="@layout/lfbwidget_layout"
+    android:initialLayout="@layout/widget_hw_layout"
     android:resizeMode="vertical"
   	android:minResizeWidth="280dp"
-  	android:minResizeHeight="70dp"
+  	android:minResizeHeight="40dp"
   	android:previewImage="@drawable/widgetpreview">
 </appwidget-provider>
