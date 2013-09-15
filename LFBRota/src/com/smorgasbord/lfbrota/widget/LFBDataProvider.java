@@ -67,10 +67,10 @@ public class LFBDataProvider extends ContentProvider {
         DateTimeComparator dateOnlyInstance = DateTimeComparator.getDateOnlyInstance();
         int borderColour = Color.BLACK;
         int isToday = 0;
-        
+        DateTime dt = now.minusDays(3);
         for (int i = 0; i < 7; i++) {
         	isToday = 0;
-        	DateTime day = now.withDayOfWeek(i+1);
+        	DateTime day = dt;
         	if(dateOnlyInstance.compare(now, day) == 0) {
         		isToday = 1;
         	};
@@ -78,6 +78,7 @@ public class LFBDataProvider extends ContentProvider {
             		day.dayOfMonth().getAsShortText(),
             		renderer.getDayColour(day.toDate()),
             		borderColour, isToday});
+            dt = dt.plusDays(1);
         }
         
         return c;
