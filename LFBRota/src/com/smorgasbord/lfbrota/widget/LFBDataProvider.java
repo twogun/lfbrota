@@ -41,6 +41,8 @@ public class LFBDataProvider extends ContentProvider {
         public static final String DAY_OF_MONTH = "day_of_month";
         public static final String DAY_COLOUR = "day_colour";
         public static final String DAY_BORDER_COLOUR = "day_border_colour";
+        public static final String DAY_TEXT_WEIGHT = "day_textweight";
+        public static final String DAY_IS_TODAY = "day_istoday";
     }
 	
 	private DayRenderer renderer;
@@ -59,21 +61,23 @@ public class LFBDataProvider extends ContentProvider {
 
         // In this sample, we only query without any parameters, so we can just return a cursor to the current week
         final MatrixCursor c = new MatrixCursor(
-                new String[]{ Columns.DAY_OF_MONTH, Columns.DAY_COLOUR, Columns.DAY_BORDER_COLOUR });
+                new String[]{ Columns.DAY_OF_MONTH, Columns.DAY_COLOUR, Columns.DAY_BORDER_COLOUR, Columns.DAY_IS_TODAY });
         
         DateTime now = new DateTime();
         DateTimeComparator dateOnlyInstance = DateTimeComparator.getDateOnlyInstance();
         int borderColour = Color.BLACK;
+        int isToday = 0;
         
         for (int i = 0; i < 7; i++) {
+        	isToday = 0;
         	DateTime day = now.withDayOfWeek(i+1);
         	if(dateOnlyInstance.compare(now, day) == 0) {
-        		borderColour = Color.MAGENTA;
+        		isToday = 1;
         	};
             c.addRow(new Object[]{ 
             		day.dayOfMonth().getAsShortText(),
             		renderer.getDayColour(day.toDate()),
-            		borderColour});
+            		borderColour, isToday});
         }
         
         return c;

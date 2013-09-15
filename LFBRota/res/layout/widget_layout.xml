@@ -2,13 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/widget_bg"
+    android:background="@drawable/appwidget_bg"
     android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#222222"
+        android:gravity="right"
         android:orientation="horizontal" >
 
         <TextView
@@ -16,39 +17,62 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/widget_padding_left"
             android:text="@string/widget_title"
             android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="12sp" />
+
+       <RelativeLayout  
+    android:layout_height="20dp" 
+    android:layout_width="fill_parent">
+
+            <Button
+                android:id="@+id/todayBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:text="@string/today_label"
+                android:textAllCaps="true"
+                android:textColor="#232323"
+                android:textSize="12sp" 
+                android:background="#F8F8F8"/>
+     
+        </RelativeLayout>
+
     </LinearLayout>
 
-    <GridView
+   
+    	<GridView
         android:id="@+id/dayList"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:layout_marginTop="2dp"
         android:background="#222222"
         android:horizontalSpacing="2dp"
-        android:numColumns="7" />
+        android:numColumns="7" />    
 
+    
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:layout_gravity="right"
-        android:background="#222222"
-        android:gravity="right" >
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_gravity="right"
+            android:background="#222222"
+            android:gravity="right"
+            android:visibility="gone" >
 
-        <Button
-            android:id="@+id/refresh"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="#F8F8F8"
-            android:gravity="center"
-            android:text="@string/today_label"
-            android:textAllCaps="true"
-            android:textColor="#232323"
-            android:textSize="12sp" />
-    </LinearLayout>
-
+            <Button
+                android:id="@+id/refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:background="#F8F8F8"
+                android:gravity="center"
+                android:text="@string/today_label"
+                android:textAllCaps="true"
+                android:textColor="#232323"
+                android:textSize="12sp" />
+        </LinearLayout>
 </LinearLayout>

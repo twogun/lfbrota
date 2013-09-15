@@ -31,6 +31,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -54,6 +55,7 @@ public class LFBWidgetProvider extends AppWidgetProvider {
 
     public LFBWidgetProvider() {
         // Start the worker thread
+    	Log.d("LFBRota", "Starting LFB Widget");
         sWorkerThread = new HandlerThread("LFBWidgetProvider-worker");
         sWorkerThread.start();
         sWorkerQueue = new Handler(sWorkerThread.getLooper());

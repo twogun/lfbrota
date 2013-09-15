@@ -21,7 +21,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -70,24 +74,32 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         // Get the data for this position from the content provider
         String day = "00";
         int colour = Color.GRAY;
-        int borderColour = Color.DKGRAY;
+        int isToday = 0;
         
         
         if (mCursor.moveToPosition(position)) {
             final int dayColIndex = mCursor.getColumnIndex(LFBDataProvider.Columns.DAY_OF_MONTH);
             final int dayColourIndex = mCursor.getColumnIndex(LFBDataProvider.Columns.DAY_COLOUR);
-            final int dayBorderColouIndex = mCursor.getColumnIndex(LFBDataProvider.Columns.DAY_BORDER_COLOUR);
+            final int dayisToday = mCursor.getColumnIndex(LFBDataProvider.Columns.DAY_IS_TODAY);
             day = mCursor.getString(dayColIndex);
             colour = mCursor.getInt(dayColourIndex);
-            borderColour = mCursor.getInt(dayBorderColouIndex);
+            isToday = mCursor.getInt(dayisToday);
         }
 
         final int itemId = R.layout.widget_daycell;
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), itemId);
-        rv.setTextViewText(R.id.widget_daynumber, day);
+        //rv.setTextViewText(R.id.widget_day_gridcell, day);
         
-		//gridcell.setTextColor(Color.BLACK);
-		//gridcell.setBackgroundColor(dayRenderer.getDayColour(date));
+        SpannableString s = new SpannableString(day); 
+        if(isToday > 0) {
+        	s.setSpan(new StyleSpan(Typeface.BOLD), 0, s.length(), 0);
+        	s.setSpan(new StyleSpan(Typeface.ITALIC), 0, s.length(), 0);
+        	s.setSpan(new RelativeSizeSpan(1.3f), 0, s.length(), 0);
+        	rv.setInt(R.id.widget_day_gridcell, "setTextColor", Color.BLACK);
+        	
+        }
+        
+        rv.setTextViewText(R.id.widget_day_gridcell, s); 
         
         rv.setInt(R.id.widget_day_gridcell, "setBackgroundColor", colour);
 

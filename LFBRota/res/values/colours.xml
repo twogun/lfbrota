@@ -2,6 +2,7 @@
 <resources>
 	<color name="white">#FFFFFF</color>
 	<color name="black">#000000</color>
+	<color name="dk_grey">#585858</color>
 	<color name="gridHeader">#D4D4C6</color>
 	<color name="symptom_color_selected">#003366</color>
 	<color name="reaction_color_selected">#003366</color>
