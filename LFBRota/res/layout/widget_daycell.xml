@@ -17,12 +17,14 @@
 	</Button>
 	
 	<TextView
-		android:id="@+id/widget_daynumber"
-		style="@style/calendar_event_style"
-		android:layout_gravity="right"
-		android:layout_width="10dip"
-		android:layout_height="10dip"
-		android:text="xx">
+	    android:id="@+id/widget_daynumber"
+	    style="@style/calendar_event_style"
+	    android:layout_width="10dip"
+	    android:layout_height="10dip"
+	    android:layout_gravity="right"
+	    android:text="xx"
+	    android:textColor="@color/dk_grey" >
+
 	</TextView>
 	
 </RelativeLayout>

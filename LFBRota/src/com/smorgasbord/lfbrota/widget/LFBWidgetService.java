@@ -19,6 +19,7 @@ package com.smorgasbord.lfbrota.widget;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -75,15 +76,18 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         String day = "00";
         int colour = Color.GRAY;
         int isToday = 0;
+        String dayOfWeek = "ss";
         
         
         if (mCursor.moveToPosition(position)) {
             final int dayColIndex = mCursor.getColumnIndex(LFBDataProvider.Columns.DAY_OF_MONTH);
             final int dayColourIndex = mCursor.getColumnIndex(LFBDataProvider.Columns.DAY_COLOUR);
             final int dayisToday = mCursor.getColumnIndex(LFBDataProvider.Columns.DAY_IS_TODAY);
+            final int dow = mCursor.getColumnIndex(LFBDataProvider.Columns.DAY_OF_WEEK);
             day = mCursor.getString(dayColIndex);
             colour = mCursor.getInt(dayColourIndex);
             isToday = mCursor.getInt(dayisToday);
+            dayOfWeek = mCursor.getString(dow);
         }
 
         final int itemId = R.layout.widget_daycell;
@@ -96,13 +100,14 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         	s.setSpan(new StyleSpan(Typeface.ITALIC), 0, s.length(), 0);
         	s.setSpan(new RelativeSizeSpan(1.3f), 0, s.length(), 0);
         	rv.setInt(R.id.widget_day_gridcell, "setTextColor", Color.BLACK);
-        	
+        	rv.setInt(R.id.dayList, "setSelection", position);
         }
         
         rv.setTextViewText(R.id.widget_day_gridcell, s); 
-        
+        rv.setTextViewText(R.id.widget_daynumber, dayOfWeek);
         rv.setInt(R.id.widget_day_gridcell, "setBackgroundColor", colour);
-
+        
+        
         // Set the click intent so that we can handle it and show a toast message
         final Intent fillInIntent = new Intent();
         final Bundle extras = new Bundle();
@@ -135,7 +140,11 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         if (mCursor != null) {
             mCursor.close();
         }
-        mCursor = mContext.getContentResolver().query(LFBDataProvider.CONTENT_URI, null, null,
-                null, null);
+        
+        SharedPreferences prefs = mContext.getSharedPreferences("lfbwidget", 0);
+		int x = prefs.getInt("weekOffset", 0);
+		String[] selectionArgs = {x + "", };
+        
+        mCursor = mContext.getContentResolver().query(LFBDataProvider.CONTENT_URI, null, null, selectionArgs, null);
     }
 }

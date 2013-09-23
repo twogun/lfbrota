@@ -39,6 +39,7 @@ public class LFBDataProvider extends ContentProvider {
     
 	public static class Columns {
         public static final String DAY_OF_MONTH = "day_of_month";
+        public static final String DAY_OF_WEEK = "day_of_week";
         public static final String DAY_COLOUR = "day_colour";
         public static final String DAY_BORDER_COLOUR = "day_border_colour";
         public static final String DAY_TEXT_WEIGHT = "day_textweight";
@@ -61,9 +62,9 @@ public class LFBDataProvider extends ContentProvider {
 
         // In this sample, we only query without any parameters, so we can just return a cursor to the current week
         final MatrixCursor c = new MatrixCursor(
-                new String[]{ Columns.DAY_OF_MONTH, Columns.DAY_COLOUR, Columns.DAY_BORDER_COLOUR, Columns.DAY_IS_TODAY });
+                new String[]{ Columns.DAY_OF_MONTH, Columns.DAY_COLOUR, Columns.DAY_BORDER_COLOUR, Columns.DAY_IS_TODAY, Columns.DAY_OF_WEEK });
         
-        DateTime now = new DateTime();
+        DateTime now = new DateTime().plusWeeks(Integer.parseInt(selectionArgs[0]));
         DateTimeComparator dateOnlyInstance = DateTimeComparator.getDateOnlyInstance();
         int borderColour = Color.BLACK;
         int isToday = 0;
@@ -77,7 +78,9 @@ public class LFBDataProvider extends ContentProvider {
             c.addRow(new Object[]{ 
             		day.dayOfMonth().getAsShortText(),
             		renderer.getDayColour(day.toDate()),
-            		borderColour, isToday});
+            		borderColour, 
+            		isToday,
+            		dt.toString("EEE")});
             dt = dt.plusDays(1);
         }
         
@@ -106,10 +109,6 @@ public class LFBDataProvider extends ContentProvider {
             String[] selectionArgs) {
         assert(uri.getPathSegments().size() == 1);
 
-        // In this sample, we only update the content provider individually for each row with new
-        // temperature values.
-        final int index = Integer.parseInt(uri.getPathSegments().get(0));
-        final MatrixCursor c = new MatrixCursor( new String[]{ Columns.DAY_OF_MONTH });
                 
         // Notify any listeners that the data backing the content provider has changed, and return
         // the number of rows affected.

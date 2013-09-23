@@ -24,8 +24,8 @@
             android:textSize="12sp" />
 
        <RelativeLayout  
-    android:layout_height="20dp" 
-    android:layout_width="fill_parent">
+            android:layout_height="20dp" 
+            android:layout_width="fill_parent">
 
             <Button
                 android:id="@+id/todayBtn"
@@ -37,42 +37,43 @@
                 android:textAllCaps="true"
                 android:textColor="#232323"
                 android:textSize="12sp" 
-                android:background="#F8F8F8"/>
+                android:background="@drawable/widget_today_btn"/>
      
         </RelativeLayout>
-
     </LinearLayout>
 
-   
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        
+        <Button
+        android:id="@+id/prevWeek"
+        android:text="&lt;"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        style="?android:attr/borderlessButtonStyle" />
+
     	<GridView
         android:id="@+id/dayList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
+        android:layout_height="match_parent"
         android:layout_marginTop="2dp"
         android:background="#222222"
         android:horizontalSpacing="2dp"
-        android:numColumns="7" />    
+        android:numColumns="7" 
+        android:layout_weight="4"
+        android:clickable="false"
+        android:listSelector="@null"/>    
 
+        <Button
+            android:id="@+id/nextWeek"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="&gt;"
+            style="?android:attr/borderlessButtonStyle" />
+        
+    </LinearLayout>
     
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:layout_gravity="right"
-            android:background="#222222"
-            android:gravity="right"
-            android:visibility="gone" >
-
-            <Button
-                android:id="@+id/refresh"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:background="#F8F8F8"
-                android:gravity="center"
-                android:text="@string/today_label"
-                android:textAllCaps="true"
-                android:textColor="#232323"
-                android:textSize="12sp" />
-        </LinearLayout>
 </LinearLayout>

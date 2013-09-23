@@ -30,7 +30,7 @@ public class CViewListGridActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_cview_list_grid);
+		setContentView(R.layout.activity_monthview_grid);
 		
 		Calendar calendar = Calendar.getInstance(Locale.getDefault());
 		selectedCalendar = calendar;
