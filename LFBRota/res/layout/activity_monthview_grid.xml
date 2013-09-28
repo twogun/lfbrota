@@ -19,29 +19,45 @@
             android:id="@+id/prevMonth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
             android:contentDescription="@string/cal_previous"
-            android:src="@drawable/calendar_left_arrow_selector" 
-            android:onClick="changeMonth">
-        </ImageView>
+            android:onClick="changeMonth"
+            android:src="@drawable/left" >
 
-        <Button
+        </ImageView>
+        
+        <View
+            android:id="@+id/ViewColorPickerHelper"
+            android:layout_width="1dip"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="4dip"
+            android:layout_marginTop="4dip"
+            android:background="?android:attr/dividerVertical" />
+
+        <TextView
             android:id="@+id/currentMonth"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center"
             android:layout_weight="0.6"
-            android:background="@drawable/calendar_bar"
             android:contentDescription="@string/cal_current"
+            android:gravity="center"
+            android:text="@string/hello_world"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#FFFFFF" >
-        </Button>
+
+        </TextView>
 
         <ImageView
             android:id="@+id/nextMonth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:baselineAlignBottom="true"
             android:contentDescription="@string/cal_next"
-            android:src="@drawable/calendar_right_arrow_selector" 
-            android:onClick="changeMonth">
+            android:onClick="changeMonth"
+            android:src="@drawable/right" >
+
         </ImageView>
     </LinearLayout>
 

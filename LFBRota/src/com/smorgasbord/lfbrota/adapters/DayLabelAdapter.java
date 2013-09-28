@@ -4,6 +4,7 @@ import java.text.DateFormatSymbols;
 import java.util.Locale;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,7 @@ import android.widget.TextView;
 public class DayLabelAdapter extends BaseAdapter {
 
 	
-	private Context context;
+	private final Context context;
 	private final String[] days = new String[7];
 	
 	
@@ -49,7 +50,9 @@ public class DayLabelAdapter extends BaseAdapter {
 				//row = inflater.inflate(R.layout.calendar_day_gridcell, parent, false);
 				TextView dayText = new TextView(context);
 				dayText.setText(days[position]);
-				dayText.setGravity(Gravity.RIGHT);
+				dayText.setGravity(Gravity.CENTER);
+				String hexColor = String.format("#%06X", (0xFFFFFF & Color.LTGRAY));
+				dayText.setTextColor(Color.LTGRAY);
 				row = dayText;
 			}
 		return row;

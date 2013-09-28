@@ -4,14 +4,16 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.smorgasbord.lfbrota.R;
 import com.smorgasbord.lfbrota.adapters.DayLabelAdapter;
@@ -48,7 +50,7 @@ public class CViewListGridActivity extends Activity {
 		gridAdapter.notifyDataSetChanged();
 		calendarEntries.setAdapter(gridAdapter);		
 		
-		Button currentMonth = (Button) this.findViewById(R.id.currentMonth);
+		TextView currentMonth = (TextView) this.findViewById(R.id.currentMonth);
 		currentMonth.setText(DateFormat.format(dateTemplate, selectedCalendar.getTime()));
 	}
 
@@ -58,6 +60,32 @@ public class CViewListGridActivity extends Activity {
 		getMenuInflater().inflate(R.menu.cview_list_grid, menu);
 		return true;
 	}
+	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch(item.getItemId()) {
+			case R.id.action_settings: {
+				startActivity(new Intent(this, SettingsActivity.class));
+				return true;
+				}
+			case R.id.action_help: {
+				startActivity(new Intent(this, HelpActivity.class));
+				return true;	
+			}
+			case R.id.action_exit: {
+				Intent intent = new Intent(Intent.ACTION_MAIN);
+				intent.addCategory(Intent.CATEGORY_HOME);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(intent);
+				return true;	
+			}
+		}
+		
+		return false;
+	}
+	
 	
 	public void changeMonth(View v) {
 	    Log.d("CViewListGridActivity", "ChangeMonth clicked " + v.getId());
@@ -83,7 +111,7 @@ public class CViewListGridActivity extends Activity {
 		gridAdapter.notifyDataSetChanged();
 		calendarEntries.setAdapter(gridAdapter);
 		
-		Button currentMonth = (Button) this.findViewById(R.id.currentMonth);
+		TextView currentMonth = (TextView) this.findViewById(R.id.currentMonth);
 		currentMonth.setText(DateFormat.format(dateTemplate, selectedCalendar.getTime()));
 		
 	}
