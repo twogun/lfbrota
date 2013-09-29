@@ -12,7 +12,9 @@
 	<color name="note_text_disabled">#333333</color>	
 	
     <color name="background">#222222</color>
-    <color name="btn_background">#F8F8F8</color>
+    <color name="btn_background">#222222</color>
+    <color name="btnbg_pressed">#33B5E5</color>
+    <color name="btnbg_selected">#33B5E5</color>
     <color name="btn_text">#232323</color>
     <color name="label_text">#FFFFFF</color>
     <color name="label_background">#FFFFFF</color>

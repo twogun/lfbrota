@@ -37,22 +37,25 @@
                 android:textAllCaps="true"
                 android:textColor="#232323"
                 android:textSize="12sp" 
-                android:background="@drawable/widget_today_btn"/>
+                android:background="@drawable/widget_today_btn"
+                />
      
         </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50.0dip"
         android:orientation="horizontal">
         
-        <Button
+        <ImageButton
         android:id="@+id/prevWeek"
-        android:text="&lt;"
-        android:layout_width="wrap_content"
+        android:layout_width="80dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        style="?android:attr/borderlessButtonStyle" />
+        style="?android:attr/borderlessButtonStyle" 
+        android:contentDescription="@string/cal_previous"
+        android:src="@drawable/ic_btn_find_prev" 
+        android:background="@drawable/btn_selector"/>
 
     	<GridView
         android:id="@+id/dayList"
@@ -66,13 +69,14 @@
         android:clickable="false"
         android:listSelector="@null"/>    
 
-        <Button
+        <ImageButton
             android:id="@+id/nextWeek"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="&gt;"
-            style="?android:attr/borderlessButtonStyle" />
+            android:contentDescription="@string/cal_next"
+            android:src="@drawable/ic_btn_find_next" 
+            android:background="@drawable/btn_selector" />
         
     </LinearLayout>
     

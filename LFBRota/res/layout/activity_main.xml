@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/cal_previous"
-            android:src="@drawable/calendar_left_arrow_selector" >
+            android:src="@drawable/today_selector" >
         </ImageView>
 
         <Button
@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/cal_next"
-            android:src="@drawable/calendar_right_arrow_selector" >
+            android:src="@drawable/ic_btn_find_next" >
         </ImageView>
     </LinearLayout>
 
