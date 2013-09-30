@@ -1,7 +1,5 @@
 package com.smorgasbord.lfbrota.adapters;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -32,18 +30,15 @@ public class RotaGridDateTimeAdapter extends BaseAdapter implements OnClickListe
 		private static final String tag = "GridCellAdapter";
 		private final Context _context;
 
-		private DayRenderer dayRenderer;
+		private final DayRenderer dayRenderer;
 		
 		private final List<DateTime> dates;
 		
-		private final String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-		private final int[] daysOfMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
 		private int currentDayOfMonth;
 		private int currentWeekDay;
 		private Button gridcell;
 		
-		private final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MMM-yyyy");
+		//private final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MMM-yyyy");
 
 		// Days in Current Month
 		public RotaGridDateTimeAdapter(Context context, int textViewResourceId, List<DateTime> dates)
@@ -62,6 +57,7 @@ public class RotaGridDateTimeAdapter extends BaseAdapter implements OnClickListe
 
 			}
 
+		@Override
 		public DateTime getItem(int position)
 			{
 				return dates.get(position);
@@ -102,25 +98,17 @@ public class RotaGridDateTimeAdapter extends BaseAdapter implements OnClickListe
 				gridcell.setText(cal.get(Calendar.DAY_OF_MONTH) + "");
 				gridcell.setTextColor(Color.BLACK);
 				gridcell.setBackgroundColor(dayRenderer.getDayColour(date));
+				gridcell.setTag(date);
 						
 				return row;
 			}
 		@Override
 		public void onClick(View view)
 			{
-				String date_month_year = (String) view.getTag();
-				//selectedDayMonthYearButton.setText("Selected: " + date_month_year);
+				Date date_month_year = (Date) view.getTag();
 
-				try
-					{
-						Date parsedDate = dateFormatter.parse(date_month_year);
-						Log.d(tag, "Parsed Date: " + parsedDate.toString());
+				Log.d(tag, "Parsed Date: " + date_month_year);
 
-					}
-				catch (ParseException e)
-					{
-						e.printStackTrace();
-					}
 			}
 
 		public int getCurrentDayOfMonth()

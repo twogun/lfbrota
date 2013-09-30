@@ -64,24 +64,27 @@
 
         </ImageView>
     </LinearLayout>
+        
+        <LinearLayout
+        android:id="@+id/calender"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <GridView
+            android:id="@+id/dayNames"
+            android:layout_width="fill_parent"
+            android:layout_height="30.0dip"
+            android:background="@color/background"
+            android:horizontalSpacing="2dp"
+            android:numColumns="7" />
 
-    <GridView
-        android:id="@+id/dayNames"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/background"
-        android:horizontalSpacing="2dp"
-        android:numColumns="7" >
-
-    </GridView>
-
-    <GridView
-        android:id="@+id/calendarEntries"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:numColumns="7" 
-        android:horizontalSpacing="2dp"
-	    android:verticalSpacing="2dp">
-    </GridView>
-
+        <GridView
+            android:id="@+id/calendarEntries"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:horizontalSpacing="2dp"
+            android:numColumns="7"
+            android:verticalSpacing="2dp" />
+    </LinearLayout>
+    
 </LinearLayout>
