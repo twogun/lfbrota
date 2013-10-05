@@ -65,7 +65,7 @@
         </ImageView>
     </LinearLayout>
         
-        <LinearLayout
+    <LinearLayout
         android:id="@+id/calender"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -85,6 +85,13 @@
             android:horizontalSpacing="2dp"
             android:numColumns="7"
             android:verticalSpacing="2dp" />
+        
+        
+    <TextView 
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/dayDesc"
+        android:textColor="#FFFFFF"/>
     </LinearLayout>
-    
+        
 </LinearLayout>

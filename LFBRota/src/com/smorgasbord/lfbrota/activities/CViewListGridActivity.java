@@ -46,7 +46,7 @@ public class CViewListGridActivity extends Activity {
 		GridView calendarEntries = (GridView) this.findViewById(R.id.calendarEntries);
 		MonthView monthView = new MonthView(selectedCalendar);
 		
-		BaseAdapter gridAdapter = new RotaGridDateTimeAdapter(this, R.id.calendar_day_gridcell, monthView.getDates());
+		BaseAdapter gridAdapter = new RotaGridDateTimeAdapter(this, monthView.getDates());
 		gridAdapter.notifyDataSetChanged();
 		calendarEntries.setAdapter(gridAdapter);		
 		
