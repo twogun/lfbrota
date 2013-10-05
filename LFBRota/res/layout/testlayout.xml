@@ -1,46 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    <RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent">
 
-    <TextView
-        android:id="@+id/textView1"
+    <RelativeLayout 
+        android:id="@+id/InnerRelativeLayoutTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_alignParentTop="true" >
 
-    <LinearLayout
+        <Button 
+            android:text="top" 
+            android:id="@+id/Button2"
+            android:layout_alignParentRight="true" 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+        </Button>
+    </RelativeLayout>
+    
+    <RelativeLayout 
+        android:id="@+id/InnerRelativeLayoutBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true" >
+
+        <Button 
+            android:text="bottom" 
+            android:id="@+id/Button1"
+            android:layout_alignParentRight="true" 
+            android:layout_width="fill_parent"
+            android:layout_height="80dip">
+        </Button>
+    </RelativeLayout>
+    
+    <GridView
+        android:id="@+id/gridView1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Button" />
-
-        <GridView
-            android:id="@+id/gridView1"
-            android:layout_width="wrap_content"
-            android:layout_height="71dp"
-            android:layout_weight="4"
-            android:numColumns="3" >
-        </GridView>
-
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Button" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
-
-</LinearLayout>
+        android:layout_above="@+id/InnerRelativeLayoutBottom"
+        android:layout_below="@+id/InnerRelativeLayoutTop"
+        android:layout_centerHorizontal="true"
+        android:numColumns="3" >
+    </GridView>
+    
+</RelativeLayout>

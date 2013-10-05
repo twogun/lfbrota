@@ -86,7 +86,7 @@ public class RotaGridDateTimeAdapter extends BaseAdapter implements
 		}
 
 		// Get a reference to the Day gridcell
-		gridcell = (Button) row.findViewById(R.id.calendar_day_button);
+		gridcell = (Button) row.findViewById(R.id.calendar_day_gridcell);
 		gridcell.setOnClickListener(this);
 
 		// Set the Day GridCell
