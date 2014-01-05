@@ -46,38 +46,39 @@ public class LFBWidgetService extends RemoteViewsService {
  * This is the factory that will provide data to the collection widget.
  */
 class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
-    private Context mContext;
+    private final Context mContext;
     private Cursor mCursor;
-    private int mAppWidgetId;
-
     public StackRemoteViewsFactory(Context context, Intent intent) {
         mContext = context;
-        mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+        intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
     }
 
+    @Override
     public void onCreate() {
         // Since we reload the cursor in onDataSetChanged() which gets called immediately after
         // onCreate(), we do nothing here.
     }
 
+    @Override
     public void onDestroy() {
         if (mCursor != null) {
             mCursor.close();
         }
     }
 
+    @Override
     public int getCount() {
         return mCursor.getCount();
     }
 
+    @Override
     public RemoteViews getViewAt(int position) {
         // Get the data for this position from the content provider
         String day = "00";
         int colour = Color.GRAY;
         int isToday = 0;
         String dayOfWeek = "ss";
-        
         
         if (mCursor.moveToPosition(position)) {
             final int dayColIndex = mCursor.getColumnIndex(LFBDataProvider.Columns.DAY_OF_MONTH);
@@ -107,7 +108,6 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         rv.setTextViewText(R.id.widget_daynumber, dayOfWeek);
         rv.setInt(R.id.widget_day_gridcell, "setBackgroundColor", colour);
         
-        
         // Set the click intent so that we can handle it and show a toast message
         final Intent fillInIntent = new Intent();
         final Bundle extras = new Bundle();
@@ -117,29 +117,37 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
         return rv;
     }
+    @Override
     public RemoteViews getLoadingView() {
         // We aren't going to return a default loading view in this sample
         return null;
     }
 
+    @Override
     public int getViewTypeCount() {
         // Technically, we have two types of views (the dark and light background views)
         return 2;
     }
 
+    @Override
     public long getItemId(int position) {
         return position;
     }
 
+    @Override
     public boolean hasStableIds() {
         return true;
     }
 
+    @Override
     public void onDataSetChanged() {
         // Refresh the cursor
         if (mCursor != null) {
             mCursor.close();
         }
+        
+        RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_layout);
+        rv.setTextViewText(R.id.monthLabel, "Bear");
         
         SharedPreferences prefs = mContext.getSharedPreferences("lfbwidget", 0);
 		int x = prefs.getInt("weekOffset", 0);

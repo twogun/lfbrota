@@ -27,7 +27,7 @@ public class RotaGridAdapter extends BaseAdapter implements OnClickListener
 		private static final String tag = "GridCellAdapter";
 		private final Context _context;
 
-		private DayRenderer dayRenderer;
+		private final DayRenderer dayRenderer;
 		
 		private final List<Date> dates;
 		private static final int DAY_OFFSET = 1;
@@ -75,7 +75,8 @@ public class RotaGridAdapter extends BaseAdapter implements OnClickListener
 				return daysOfMonth[i];
 			}
 
-		public Date getItem(int position)
+		@Override
+        public Date getItem(int position)
 			{
 				return dates.get(position);
 			}
@@ -206,7 +207,7 @@ public class RotaGridAdapter extends BaseAdapter implements OnClickListener
 				Date date = dates.get(position);
 			    cal.setTime(date);
 
-				gridcell.setText(cal.get(Calendar.DAY_OF_MONTH) + "");
+				gridcell.setText("a" + cal.get(Calendar.DAY_OF_MONTH) + "");
 				gridcell.setTextColor(Color.BLACK);
 				gridcell.setBackgroundColor(dayRenderer.getDayColour(date));
 						

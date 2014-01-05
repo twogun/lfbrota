@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeComparator;
 
 import android.app.Activity;
 import android.content.Context;
@@ -36,6 +37,8 @@ public class RotaGridDateTimeAdapter extends BaseAdapter implements
 	private final DayRenderer dayRenderer;
 
 	private final List<DateTime> dates;
+	private final DateTime today;
+	private final DateTimeComparator dateOnlyInstance;
 
 	private int currentDayOfMonth;
 	private int currentWeekDay;
@@ -51,6 +54,9 @@ public class RotaGridDateTimeAdapter extends BaseAdapter implements
 		this.dates = dates;
 		this.dayRenderer = new DayRenderer(new LFBRota());
 
+		today = new DateTime();
+		dateOnlyInstance = DateTimeComparator.getDateOnlyInstance();
+		
 		Calendar calendar = Calendar.getInstance();
 		setCurrentDayOfMonth(calendar.get(Calendar.DAY_OF_MONTH));
 		setCurrentWeekDay(calendar.get(Calendar.DAY_OF_WEEK));
@@ -78,23 +84,31 @@ public class RotaGridDateTimeAdapter extends BaseAdapter implements
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View row = convertView;
+		
+		DateTime dateTime = dates.get(position);
+        boolean isToday = false;
+        if(dateOnlyInstance.compare(today, dateTime) == 0) {
+            isToday = true;
+        };
+		
 		if (row == null) {
-			LayoutInflater inflater = (LayoutInflater) _context
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			row = inflater.inflate(R.layout.calendar_day_gridcell, parent,
-					false);
+			LayoutInflater inflater = (LayoutInflater) _context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			if(isToday) {
+			    row = inflater.inflate(R.layout.calander_today_gridcell, parent, false);
+			} else {
+			    row = inflater.inflate(R.layout.calendar_day_gridcell, parent, false);
+			}
+			
 		}
-
+		
 		// Get a reference to the Day gridcell
 		gridcell = (Button) row.findViewById(R.id.calendar_day_gridcell);
 		gridcell.setOnClickListener(this);
 
-		// Set the Day GridCell
-		Calendar cal = Calendar.getInstance();
+		
 		Date date = dates.get(position).toDate();
-		cal.setTime(date);
-
-		gridcell.setText(cal.get(Calendar.DAY_OF_MONTH) + "");
+		
+		gridcell.setText(dateTime.getDayOfMonth() + "");
 		gridcell.setTextColor(Color.BLACK);
 		gridcell.setBackgroundColor(dayRenderer.getDayColour(date));
 		gridcell.setTag(date);

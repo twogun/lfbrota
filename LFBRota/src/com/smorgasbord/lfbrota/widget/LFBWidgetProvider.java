@@ -21,8 +21,6 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,7 +33,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import com.smorgasbord.lfbrota.R;
 
@@ -43,6 +40,9 @@ import com.smorgasbord.lfbrota.R;
  * The LFB widget's AppWidgetProvider.
  */
 public class LFBWidgetProvider extends AppWidgetProvider {
+    
+    public static final String WIDGETTAG = "LFBWidget";
+    
 	public static String CLICK_ACTION = "com.example.android.weatherlistwidget.CLICK";
 	public static String TODAY_ACTION = "com.example.android.weatherlistwidget.TODAY";
 	public static String PREVWK_ACTION = "com.example.android.weatherlistwidget.PREVWEEK";
@@ -55,18 +55,17 @@ public class LFBWidgetProvider extends AppWidgetProvider {
 
 	private boolean mIsLargeLayout = true;
 
-	private int todayClicks = 0;
+	private final int todayClicks = 0;
 
 	public LFBWidgetProvider() {
 		// Start the worker thread
-		Log.d("LFBRota", "Starting LFB Widget");
+		Log.d(WIDGETTAG, "Starting LFB Widget");
 		sWorkerThread = new HandlerThread("LFBWidgetProvider-worker");
 		sWorkerThread.start();
 		sWorkerQueue = new Handler(sWorkerThread.getLooper());
 	}
 
-	// XXX: clear the worker queue if we are destroyed?
-
+	
 	@Override
 	public void onEnabled(Context context) {
 		// Register for external updates to the data to trigger an update of the
@@ -98,37 +97,17 @@ public class LFBWidgetProvider extends AppWidgetProvider {
 			edit.putInt("weekOffset", 0);
 			edit.commit();
 
-			CharSequence text = "Today Clicked ";
-			int duration = Toast.LENGTH_SHORT;
-
-			Toast toast = Toast.makeText(ctx, text, duration);
-			toast.show();
-
 		} else if (action.equals(NEXTWK_ACTION)) {
 			int x = prefs.getInt("weekOffset", 0) + 1;
 			Editor edit = prefs.edit();
 			edit.putInt("weekOffset", x);
 			edit.commit();
 
-			CharSequence text = "Next Week offset:  " + x;
-			int duration = Toast.LENGTH_SHORT;
-
-			Toast toast = Toast.makeText(ctx, text, duration);
-			toast.show();
-
 		} else if (action.equals(PREVWK_ACTION)) {
-
 			int x = prefs.getInt("weekOffset", 0) - 1;
 			Editor edit = prefs.edit();
 			edit.putInt("weekOffset", x);
 			edit.commit();
-
-			CharSequence text = "Prev Week offset:  " + x;
-			int duration = Toast.LENGTH_SHORT;
-
-			Toast toast = Toast.makeText(ctx, text, duration);
-			toast.show();
-
 		}
 		
 		final Context context = ctx;
@@ -139,22 +118,14 @@ public class LFBWidgetProvider extends AppWidgetProvider {
             public void run() {
                 final ContentResolver r = context.getContentResolver();
                 final Cursor c = r.query(LFBDataProvider.CONTENT_URI, null, null, selectionArgs, null);
-                final int count = c.getCount();
-
-                // We disable the data changed observer temporarily since each of the updates
-                // will trigger an onChange() in our data observer.
-              //  r.unregisterContentObserver(sDataObserver);
-//                for (int i = 0; i < count; ++i) {
-//                    final Uri uri = ContentUris.withAppendedId(LFBDataProvider.CONTENT_URI, i);
-//                    final ContentValues values = new ContentValues();
-//                    
-//                    r.update(uri, values, null, null);
-//                }
-               // r.registerContentObserver(LFBDataProvider.CONTENT_URI, true, sDataObserver);
-
+                int count = c.getCount();
                 final AppWidgetManager mgr = AppWidgetManager.getInstance(context);
                 final ComponentName cn = new ComponentName(context, LFBWidgetProvider.class);
-                mgr.notifyAppWidgetViewDataChanged(mgr.getAppWidgetIds(cn), R.id.dayList);
+                int[] appWidgetIds = mgr.getAppWidgetIds(cn);
+                //RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_hw_layout);
+                //rv.setTextViewText(R.id.text, now);
+               // mgr.notifyAppWidgetViewDataChanged(appWidgetId, viewId)
+                mgr.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.dayList);
             }
         });
 
@@ -163,37 +134,31 @@ public class LFBWidgetProvider extends AppWidgetProvider {
 
 	private RemoteViews buildLayout(Context context, int appWidgetId,
 			boolean largeLayout) {
-		RemoteViews rv;
-
-		// Specify the service to provide data for the collection widget. Note
-		// that we need to
-		// embed the appWidgetId via the data otherwise it will be ignored.
-		final Intent intent = new Intent(context, LFBWidgetService.class);
-		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-		intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-		rv = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
-		rv.setRemoteAdapter(appWidgetId, R.id.dayList, intent);
-
-		// Bind the click intent for the refresh button on the widget
-		final Intent refreshIntent = new Intent(context,
-				LFBWidgetProvider.class);
+		
+	    final Intent intent = new Intent(context, LFBWidgetService.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+	    RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+        rv.setRemoteAdapter(appWidgetId, R.id.dayList, intent);
+		
+        rv.setTextViewText(R.id.monthLabel, "grrrr");
+        
+		final Intent refreshIntent = new Intent(context, LFBWidgetProvider.class);
 		refreshIntent.setAction(LFBWidgetProvider.TODAY_ACTION);
-		final PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(
-				context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		final PendingIntent refreshPendingIntent = 
+		        PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		rv.setOnClickPendingIntent(R.id.todayBtn, refreshPendingIntent);
 
-		final Intent nxtWeekIntent = new Intent(context,
-				LFBWidgetProvider.class);
+		final Intent nxtWeekIntent = new Intent(context, LFBWidgetProvider.class);
 		nxtWeekIntent.setAction(LFBWidgetProvider.NEXTWK_ACTION);
-		final PendingIntent nxtWeekPendingIntent = PendingIntent.getBroadcast(
-				context, 0, nxtWeekIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		final PendingIntent nxtWeekPendingIntent = 
+		        PendingIntent.getBroadcast(context, 0, nxtWeekIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		rv.setOnClickPendingIntent(R.id.nextWeek, nxtWeekPendingIntent);
 
-		final Intent prvWeekIntent = new Intent(context,
-				LFBWidgetProvider.class);
+		final Intent prvWeekIntent = new Intent(context,LFBWidgetProvider.class);
 		prvWeekIntent.setAction(LFBWidgetProvider.PREVWK_ACTION);
-		final PendingIntent prvWeekPendingIntent = PendingIntent.getBroadcast(
-				context, 0, prvWeekIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		final PendingIntent prvWeekPendingIntent = 
+		        PendingIntent.getBroadcast(context, 0, prvWeekIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		rv.setOnClickPendingIntent(R.id.prevWeek, prvWeekPendingIntent);
 
 		return rv;
@@ -204,8 +169,7 @@ public class LFBWidgetProvider extends AppWidgetProvider {
 			int[] appWidgetIds) {
 		// Update each of the widgets with the remote adapter
 		for (int i = 0; i < appWidgetIds.length; ++i) {
-			RemoteViews layout = buildLayout(context, appWidgetIds[i],
-					mIsLargeLayout);
+			RemoteViews layout = buildLayout(context, appWidgetIds[i], mIsLargeLayout);
 			appWidgetManager.updateAppWidget(appWidgetIds[i], layout);
 		}
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
@@ -216,14 +180,10 @@ public class LFBWidgetProvider extends AppWidgetProvider {
 			AppWidgetManager appWidgetManager, int appWidgetId,
 			Bundle newOptions) {
 
-		int minWidth = newOptions
-				.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
-		int maxWidth = newOptions
-				.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH);
-		int minHeight = newOptions
-				.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
-		int maxHeight = newOptions
-				.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT);
+		int minWidth = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+		int maxWidth = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH);
+		int minHeight = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
+		int maxHeight = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT);
 
 		RemoteViews layout;
 		if (minHeight < 100) {
@@ -242,8 +202,8 @@ public class LFBWidgetProvider extends AppWidgetProvider {
  * detects a change.
  */
 class LFBDataProviderObserver extends ContentObserver {
-	private AppWidgetManager mAppWidgetManager;
-	private ComponentName mComponentName;
+	private final AppWidgetManager mAppWidgetManager;
+	private final ComponentName mComponentName;
 
 	LFBDataProviderObserver(AppWidgetManager mgr, ComponentName cn, Handler h) {
 		super(h);
