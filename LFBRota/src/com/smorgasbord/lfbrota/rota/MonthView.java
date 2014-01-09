@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeField;
 
 import android.util.Log;
 
@@ -13,8 +12,8 @@ public class MonthView {
 
 	private static final String tag = "MonthView";
 	
-	private Calendar calendar;
-	private DateTime selectedTime;
+	private final Calendar calendar;
+	private final DateTime selectedTime;
 	
 	public MonthView(Calendar calendar) {
 		calendar.set(Calendar.DAY_OF_MONTH, 1);
@@ -26,11 +25,8 @@ public class MonthView {
 		
 		List<DateTime> dates = new ArrayList<DateTime>();
 		
-		// The number of days to leave blank at
-		// the start of this month.
+		// The number of days to leave blank at the start of this month.
 		int trailingSpaces = 0;
-		int daysInPrevMonth = 0;
-		DateTime prevMonth = null;
 		DateTime nextMonth = null;
 
 		int currentMonth = calendar.get(Calendar.MONTH);
@@ -38,37 +34,35 @@ public class MonthView {
 		
 		Log.d(tag, "Current Month: " + " " + currentMonth + " having " + daysInMonth + " days.");
 
-		prevMonth = selectedTime.minusMonths(1);
-		daysInPrevMonth = prevMonth.dayOfMonth().getMaximumValue();
 		nextMonth = selectedTime.plusMonths(1);
 		
-		
-		// Compute how much to leave before before the first day of the
-		// month.
-		// getDay() returns 0 for Sunday.
+		// Compute how much to leave before before the first day of the month.
+		// getDayOfWeek() returns 7 for Sunday.
 		int firstofMonthWeekDay = selectedTime.getDayOfWeek();
 		trailingSpaces = firstofMonthWeekDay;
 
 		Log.d(tag, "Week Day:" + firstofMonthWeekDay + " is " + selectedTime);
-		Log.d(tag, "No. Trailing space to Add: " + trailingSpaces);
-		Log.d(tag, "No. of Days in Previous Month: " + daysInPrevMonth);
+		Log.d(tag, "No. preceding days to fill in: " + trailingSpaces);
 
-		// Trailing Month days
-		for (int i = 0; i < trailingSpaces; i++) {
-			dates.add(prevMonth.dayOfMonth().setCopy(daysInPrevMonth - trailingSpaces + i ));
+		// Preceding Month days
+		DateTime currentDay = selectedTime;
+		if(trailingSpaces != 7) {
+		    for (int i = trailingSpaces; i > 0; i--) {
+		        currentDay = currentDay.minusDays(1);
+		        dates.add(0, currentDay);
+	        }
 		}
-
+		
 		// Current Month Days
 		for (int i = 1; i <= daysInMonth; i++) {
 			dates.add(selectedTime.dayOfMonth().setCopy(i));				
 		}
 
-		// Leading Month days
+		// Following Month days
 		for (int i = 0; i < dates.size() % 7; i++) {
 			dates.add(nextMonth.dayOfMonth().setCopy(i + 1));
-			}
-		
-		
+		}
+			
 		return dates;
 	}
 }

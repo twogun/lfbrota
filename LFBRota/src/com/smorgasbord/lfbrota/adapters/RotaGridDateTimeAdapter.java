@@ -86,6 +86,7 @@ public class RotaGridDateTimeAdapter extends BaseAdapter implements
 		View row = convertView;
 		
 		DateTime dateTime = dates.get(position);
+
         boolean isToday = false;
         if(dateOnlyInstance.compare(today, dateTime) == 0) {
             isToday = true;

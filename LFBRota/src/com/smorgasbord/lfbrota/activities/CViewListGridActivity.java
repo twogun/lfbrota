@@ -1,7 +1,10 @@
 package com.smorgasbord.lfbrota.activities;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
+
+import org.joda.time.DateTime;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,7 +20,6 @@ import android.widget.TextView;
 
 import com.smorgasbord.lfbrota.R;
 import com.smorgasbord.lfbrota.adapters.DayLabelAdapter;
-import com.smorgasbord.lfbrota.adapters.RotaGridAdapter;
 import com.smorgasbord.lfbrota.adapters.RotaGridDateTimeAdapter;
 import com.smorgasbord.lfbrota.rota.MonthView;
 
@@ -106,8 +108,9 @@ public class CViewListGridActivity extends Activity {
 	private void refreshRotaGrid()
 	{
 		GridView calendarEntries = (GridView) this.findViewById(R.id.calendarEntries);
-		BaseAdapter gridAdapter = new RotaGridAdapter(this, R.id.calendar_day_gridcell, 
-				selectedCalendar.get(Calendar.MONTH) + 1, selectedCalendar.get(Calendar.YEAR));
+		List<DateTime> dates = new MonthView(selectedCalendar).getDates();
+		BaseAdapter gridAdapter = new RotaGridDateTimeAdapter(this, dates);
+		
 		gridAdapter.notifyDataSetChanged();
 		calendarEntries.setAdapter(gridAdapter);
 		
