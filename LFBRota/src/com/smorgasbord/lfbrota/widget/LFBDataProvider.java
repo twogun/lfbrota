@@ -55,6 +55,16 @@ public class LFBDataProvider extends ContentProvider {
         return true;
     }
 
+    /** 
+     * The data provider isn't a real data provider but was just an experiment to learn a little bit more about
+     * how various android components work.
+     * 
+     * As such the method has been somewhat bastardised to shoe-horn certain parameters
+     * the selection args is used for this purpose
+     * arg[0] - indicates how manys weeks intot the future or past you want to look.
+     * arg[1] - indicates whether you want the week to view to be fixed or rolling. 
+     * 
+     */
     @Override
     public synchronized Cursor query(Uri uri, String[] projection, String selection,
             String[] selectionArgs, String sortOrder) {
@@ -64,24 +74,45 @@ public class LFBDataProvider extends ContentProvider {
         final MatrixCursor c = new MatrixCursor(
                 new String[]{ Columns.DAY_OF_MONTH, Columns.DAY_COLOUR, Columns.DAY_BORDER_COLOUR, Columns.DAY_IS_TODAY, Columns.DAY_OF_WEEK });
         
-        DateTime now = new DateTime().plusWeeks(Integer.parseInt(selectionArgs[0]));
+        DateTime today = new DateTime();
+        DateTime baseDate = new DateTime().plusWeeks(Integer.parseInt(selectionArgs[0]));
         DateTimeComparator dateOnlyInstance = DateTimeComparator.getDateOnlyInstance();
         int borderColour = Color.BLACK;
         int isToday = 0;
-        DateTime dt = now.minusDays(3);
-        for (int i = 0; i < 7; i++) {
-        	isToday = 0;
-        	DateTime day = dt;
-        	if(dateOnlyInstance.compare(now, day) == 0) {
-        		isToday = 1;
-        	};
-            c.addRow(new Object[]{ 
-            		day.dayOfMonth().getAsShortText(),
-            		renderer.getDayColour(day.toDate()),
-            		borderColour, 
-            		isToday,
-            		dt.toString("EEE")});
-            dt = dt.plusDays(1);
+        
+        if(selectionArgs.length > 1 &&
+                selectionArgs[1] != null && 
+                Integer.parseInt(selectionArgs[1]) > 0 ) {
+            
+            for (int i = 1; i <= 7; i++) {
+                DateTime day = baseDate.withDayOfWeek(i);
+                if(dateOnlyInstance.compare(today, day) == 0) {
+                    isToday = 1;
+                };
+                c.addRow(new Object[]{ 
+                        day.dayOfMonth().getAsShortText(),
+                        renderer.getDayColour(day.toDate()),
+                        borderColour, 
+                        isToday,
+                        day.toString("EEE")});
+            }
+        }
+        else {
+            DateTime dt = baseDate.minusDays(3);
+            for (int i = 0; i < 7; i++) {
+                isToday = 0;
+                DateTime day = dt;
+                if(dateOnlyInstance.compare(today, day) == 0) {
+                    isToday = 1;
+                };
+                c.addRow(new Object[]{ 
+                        day.dayOfMonth().getAsShortText(),
+                        renderer.getDayColour(day.toDate()),
+                        borderColour, 
+                        isToday,
+                        dt.toString("EEE")});
+                dt = dt.plusDays(1);
+            }
         }
         
         return c;

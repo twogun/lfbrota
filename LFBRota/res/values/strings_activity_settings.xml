@@ -46,12 +46,12 @@
     
     <string name="pref_widget_layout">Widget Layout</string>
     <string-array name="pref_widget_week_titles">
-        <item>Rolling</item>
-        <item>Fixed</item>
+        <item name="0">Rolling</item>
+        <item name="1">Fixed</item>
     </string-array>
     <string-array name="pref_widget_week_values">
-        <item>0</item>
-        <item>1</item>
+        <item name="0">0</item>
+        <item name="1">1</item>
     </string-array>
     
 

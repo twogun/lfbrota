@@ -7,6 +7,8 @@ import java.util.Locale;
 import org.joda.time.DateTime;
 
 import android.app.Activity;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -22,9 +24,13 @@ import com.smorgasbord.lfbrota.R;
 import com.smorgasbord.lfbrota.adapters.DayLabelAdapter;
 import com.smorgasbord.lfbrota.adapters.RotaGridDateTimeAdapter;
 import com.smorgasbord.lfbrota.rota.MonthView;
+import com.smorgasbord.lfbrota.widget.LFBWidgetProvider;
 
 public class CViewListGridActivity extends Activity {
+    
+    public static final String LFBTAG = "LFBApp";
 
+    public static final int SETTING_REQUEST = 1;
 	
 	private Calendar selectedCalendar;
 	private DayLabelAdapter dayLabelAdapter;
@@ -69,7 +75,7 @@ public class CViewListGridActivity extends Activity {
 		// TODO Auto-generated method stub
 		switch(item.getItemId()) {
 			case R.id.action_settings: {
-				startActivity(new Intent(this, SettingsActivity.class));
+				startActivityForResult(new Intent(this, SettingsActivity.class), SETTING_REQUEST);
 				return true;
 				}
 			case R.id.action_help: {
@@ -117,6 +123,18 @@ public class CViewListGridActivity extends Activity {
 		TextView currentMonth = (TextView) this.findViewById(R.id.currentMonth);
 		currentMonth.setText(DateFormat.format(dateTemplate, selectedCalendar.getTime()));
 		
+	}
+	
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode,
+            Intent data) {
+	    
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        final ComponentName cn = new ComponentName(this, LFBWidgetProvider.class);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(cn);
+        //LFBWidgetProvider.
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.dayList);
+        Log.d(LFBTAG, "Blagh");
 	}
 
 }

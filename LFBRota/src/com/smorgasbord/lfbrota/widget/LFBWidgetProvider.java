@@ -31,6 +31,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -118,13 +119,9 @@ public class LFBWidgetProvider extends AppWidgetProvider {
             public void run() {
                 final ContentResolver r = context.getContentResolver();
                 final Cursor c = r.query(LFBDataProvider.CONTENT_URI, null, null, selectionArgs, null);
-                int count = c.getCount();
                 final AppWidgetManager mgr = AppWidgetManager.getInstance(context);
                 final ComponentName cn = new ComponentName(context, LFBWidgetProvider.class);
                 int[] appWidgetIds = mgr.getAppWidgetIds(cn);
-                //RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_hw_layout);
-                //rv.setTextViewText(R.id.text, now);
-               // mgr.notifyAppWidgetViewDataChanged(appWidgetId, viewId)
                 mgr.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.dayList);
             }
         });
@@ -141,8 +138,20 @@ public class LFBWidgetProvider extends AppWidgetProvider {
 	    RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
         rv.setRemoteAdapter(appWidgetId, R.id.dayList, intent);
 		
-        rv.setTextViewText(R.id.monthLabel, "grrrr");
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String widgetViewStyle = sharedPrefs.getString("widget_view", "0");
         
+        switch(Integer.parseInt(widgetViewStyle)) {
+            case 1: {
+                rv.setTextViewText(R.id.monthLabel, "fixed");
+                break;
+            }
+            default: {
+                rv.setTextViewText(R.id.monthLabel, "rolling");
+                break;
+            }
+        }
+
 		final Intent refreshIntent = new Intent(context, LFBWidgetProvider.class);
 		refreshIntent.setAction(LFBWidgetProvider.TODAY_ACTION);
 		final PendingIntent refreshPendingIntent = 
@@ -194,6 +203,8 @@ public class LFBWidgetProvider extends AppWidgetProvider {
 		layout = buildLayout(context, appWidgetId, mIsLargeLayout);
 		appWidgetManager.updateAppWidget(appWidgetId, layout);
 	}
+	
+	
 
 }
 

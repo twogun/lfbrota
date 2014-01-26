@@ -24,6 +24,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
@@ -149,9 +150,17 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_layout);
         rv.setTextViewText(R.id.monthLabel, "Bear");
         
+        // Arg[0]
         SharedPreferences prefs = mContext.getSharedPreferences("lfbwidget", 0);
-		int x = prefs.getInt("weekOffset", 0);
-		String[] selectionArgs = {x + "", };
+		int offset = prefs.getInt("weekOffset", 0);
+		
+		//Arg[1]
+		 SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+	     String widgetViewStyle = sharedPrefs.getString("widget_view", "0");
+	        
+	     String[] selectionArgs = {offset + "", widgetViewStyle };   
+		
+		
         
         mCursor = mContext.getContentResolver().query(LFBDataProvider.CONTENT_URI, null, null, selectionArgs, null);
     }

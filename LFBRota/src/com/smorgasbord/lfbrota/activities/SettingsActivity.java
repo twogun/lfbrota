@@ -19,7 +19,9 @@ import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.smorgasbord.lfbrota.R;
 
@@ -46,6 +48,7 @@ public class SettingsActivity extends PreferenceActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.setResult(RESULT_CANCELED);
 		setupActionBar();
 	}
 
@@ -271,16 +274,11 @@ public class SettingsActivity extends PreferenceActivity {
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public static class DataSyncPreferenceFragment extends PreferenceFragment {
-		@Override
-		public void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-			addPreferencesFromResource(R.xml.pref_widget);
 
-			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
-			// to their values. When their values change, their summaries are
-			// updated to reflect the new value, per the Android Design
-			// guidelines.
-			bindPreferenceSummaryToValue(findPreference("widget_view"));
-		}
-	}
+	    View.OnClickListener mOnClickListener = new View.OnClickListener() {
+	        @Override
+            public void onClick(View v) {
+	            Log.d("Whoop", "Whoop");
+	      	}
+	    };}
 }
