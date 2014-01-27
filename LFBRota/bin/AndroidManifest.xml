@@ -45,21 +45,10 @@
             </intent-filter>
         </activity>
 
-        <receiver
-            android:name="com.smorgasbord.lfbrota.widget.HelloWorldWidget"
-            android:label="@string/hello_widget_name" >
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/hellowidget" />
-        </receiver>
-
         <!-- The widget provider -->
         <receiver
             android:name="com.smorgasbord.lfbrota.widget.LFBWidgetProvider"
-            android:label="AAA Rota" >
+            android:label="LFB Rota" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
