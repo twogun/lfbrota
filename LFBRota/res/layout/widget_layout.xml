@@ -50,8 +50,9 @@
     </LinearLayout>
 
     <LinearLayout android:layout_width="match_parent"
-        android:layout_height="50.0dip"
-        android:orientation="horizontal">
+        android:layout_height="fill_parent"
+        android:orientation="horizontal"
+        android:background="#222222">
         
         <ImageButton
         android:id="@+id/prevWeek"
@@ -66,7 +67,7 @@
     	<GridView
         android:id="@+id/dayList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="fill_parent"
         android:layout_marginTop="2dp"
         android:background="#222222"
         android:horizontalSpacing="2dp"
@@ -76,13 +77,13 @@
         android:listSelector="@null"/>    
 
         <ImageButton
-            android:id="@+id/nextWeek"
-            android:layout_width="80dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:contentDescription="@string/cal_next"
-            android:src="@drawable/ic_btn_find_next" 
-            android:background="@drawable/btn_selector" />
+        android:id="@+id/nextWeek"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:contentDescription="@string/cal_next"
+        android:src="@drawable/ic_btn_find_next" 
+        android:background="@drawable/btn_selector" />
         
     </LinearLayout>
     
