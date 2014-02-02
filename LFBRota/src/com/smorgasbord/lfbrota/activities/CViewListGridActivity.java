@@ -1,5 +1,6 @@
 package com.smorgasbord.lfbrota.activities;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -10,11 +11,18 @@ import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.gesture.Gesture;
+import android.gesture.GestureLibraries;
+import android.gesture.GestureLibrary;
+import android.gesture.GestureOverlayView;
+import android.gesture.GestureOverlayView.OnGesturePerformedListener;
+import android.gesture.Prediction;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -26,7 +34,7 @@ import com.smorgasbord.lfbrota.adapters.RotaGridDateTimeAdapter;
 import com.smorgasbord.lfbrota.rota.MonthView;
 import com.smorgasbord.lfbrota.widget.LFBWidgetProvider;
 
-public class CViewListGridActivity extends Activity {
+public class CViewListGridActivity extends Activity implements OnGesturePerformedListener{
     
     public static final String LFBTAG = "LFBApp";
 
@@ -34,6 +42,7 @@ public class CViewListGridActivity extends Activity {
 	
 	private Calendar selectedCalendar;
 	private DayLabelAdapter dayLabelAdapter;
+	private GestureLibrary mLibrary;
 	
 	private static final String dateTemplate = "MMMM yyyy";
 	
@@ -41,6 +50,15 @@ public class CViewListGridActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_monthview_grid);
+		
+		mLibrary = GestureLibraries.fromRawResource(this, R.raw.gestures);
+		   if (!mLibrary.load()) {
+		     finish();
+		   }
+		 
+		   GestureOverlayView gestures = (GestureOverlayView) findViewById(R.id.gestures);
+		   gestures.addOnGesturePerformedListener(this);
+		
 		
 		Calendar calendar = Calendar.getInstance(Locale.getDefault());
 		selectedCalendar = calendar;
@@ -60,6 +78,8 @@ public class CViewListGridActivity extends Activity {
 		
 		TextView currentMonth = (TextView) this.findViewById(R.id.currentMonth);
 		currentMonth.setText(DateFormat.format(dateTemplate, selectedCalendar.getTime()));
+		
+		
 	}
 
 	@Override
@@ -135,6 +155,30 @@ public class CViewListGridActivity extends Activity {
         //LFBWidgetProvider.
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.dayList);
         Log.d(LFBTAG, "Blagh");
+	}
+
+	@Override
+    public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
+	    ArrayList<Prediction> predictions = mLibrary.recognize(gesture);
+	  
+	    if (predictions.size() > 0 && predictions.get(0).score > 1.0) {
+	      String result = predictions.get(0).name;
+	  
+	      if ("next".equalsIgnoreCase(result)) {
+	          selectedCalendar.add(Calendar.MONTH, 1);
+	      } else if ("previous".equalsIgnoreCase(result)) {
+	          selectedCalendar.add(Calendar.MONTH, -1);
+	      }
+	      
+	      refreshRotaGrid();
+	    }
+	    
+	 }
+	
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent e)
+	{
+	    return super.dispatchTouchEvent(e);
 	}
 
 }

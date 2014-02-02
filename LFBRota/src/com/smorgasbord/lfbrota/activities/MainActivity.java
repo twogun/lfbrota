@@ -1,8 +1,10 @@
-package com.smorgasbord.lfbrota;
+package com.smorgasbord.lfbrota.activities;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
+
+import com.smorgasbord.lfbrota.R;
 
 public class MainActivity extends Activity {
 
