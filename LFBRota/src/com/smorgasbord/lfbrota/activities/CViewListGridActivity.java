@@ -2,10 +2,7 @@ package com.smorgasbord.lfbrota.activities;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
-
-import org.joda.time.DateTime;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
@@ -17,6 +14,7 @@ import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.gesture.Prediction;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -26,6 +24,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.smorgasbord.lfbrota.R;
@@ -51,6 +50,9 @@ public class CViewListGridActivity extends Activity implements OnGesturePerforme
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_monthview_grid);
 		
+	//	ImageButton todayButton = (ImageButton) this.findViewById(R.id.activityToday);
+	//	todayButton.setVisibility(View.INVISIBLE);
+		
 		mLibrary = GestureLibraries.fromRawResource(this, R.raw.gestures);
 		   if (!mLibrary.load()) {
 		     finish();
@@ -64,22 +66,12 @@ public class CViewListGridActivity extends Activity implements OnGesturePerforme
 		selectedCalendar = calendar;
 		
 		GridView dayName = (GridView) this.findViewById(R.id.dayNames);
+        
+        dayLabelAdapter = new DayLabelAdapter(this);
+        dayLabelAdapter.notifyDataSetChanged();
+        dayName.setAdapter(dayLabelAdapter);
 		
-		dayLabelAdapter = new DayLabelAdapter(this);
-		dayLabelAdapter.notifyDataSetChanged();
-		dayName.setAdapter(dayLabelAdapter);
-		
-		GridView calendarEntries = (GridView) this.findViewById(R.id.calendarEntries);
-		MonthView monthView = new MonthView(selectedCalendar);
-		
-		BaseAdapter gridAdapter = new RotaGridDateTimeAdapter(this, monthView.getDates());
-		gridAdapter.notifyDataSetChanged();
-		calendarEntries.setAdapter(gridAdapter);		
-		
-		TextView currentMonth = (TextView) this.findViewById(R.id.currentMonth);
-		currentMonth.setText(DateFormat.format(dateTemplate, selectedCalendar.getTime()));
-		
-		
+		new PopulateMonthGrid(this).execute(selectedCalendar);
 	}
 
 	@Override
@@ -92,7 +84,7 @@ public class CViewListGridActivity extends Activity implements OnGesturePerforme
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
+
 		switch(item.getItemId()) {
 			case R.id.action_settings: {
 				startActivityForResult(new Intent(this, SettingsActivity.class), SETTING_REQUEST);
@@ -128,23 +120,22 @@ public class CViewListGridActivity extends Activity implements OnGesturePerforme
 	    	}
 	    }
 	    
-	    refreshRotaGrid();
+	    new PopulateMonthGrid(this).execute(selectedCalendar);
 	}
 	
-	private void refreshRotaGrid()
-	{
-		GridView calendarEntries = (GridView) this.findViewById(R.id.calendarEntries);
-		List<DateTime> dates = new MonthView(selectedCalendar).getDates();
-		BaseAdapter gridAdapter = new RotaGridDateTimeAdapter(this, dates);
+	   public void gotoTodayClicked(View v){
+	        
+	        ImageButton todayButton = (ImageButton) this.findViewById(R.id.activityToday);
+	        todayButton.setVisibility(View.INVISIBLE);
+	        
+	        Calendar calendar = Calendar.getInstance(Locale.getDefault());
+	        selectedCalendar = calendar;
+	        
+	        new PopulateMonthGrid(this).execute(selectedCalendar);
+	        
+	        Log.d(LFBTAG, "goto Today");
+	    }
 		
-		gridAdapter.notifyDataSetChanged();
-		calendarEntries.setAdapter(gridAdapter);
-		
-		TextView currentMonth = (TextView) this.findViewById(R.id.currentMonth);
-		currentMonth.setText(DateFormat.format(dateTemplate, selectedCalendar.getTime()));
-		
-	}
-	
 	@Override
     protected void onActivityResult(int requestCode, int resultCode,
             Intent data) {
@@ -152,9 +143,8 @@ public class CViewListGridActivity extends Activity implements OnGesturePerforme
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         final ComponentName cn = new ComponentName(this, LFBWidgetProvider.class);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(cn);
-        //LFBWidgetProvider.
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.dayList);
-        Log.d(LFBTAG, "Blagh");
+
 	}
 
 	@Override
@@ -170,7 +160,7 @@ public class CViewListGridActivity extends Activity implements OnGesturePerforme
 	          selectedCalendar.add(Calendar.MONTH, -1);
 	      }
 	      
-	      refreshRotaGrid();
+	      new PopulateMonthGrid(this).execute(selectedCalendar);
 	    }
 	    
 	 }
@@ -180,5 +170,61 @@ public class CViewListGridActivity extends Activity implements OnGesturePerforme
 	{
 	    return super.dispatchTouchEvent(e);
 	}
+	
+
+	
+	private class PopulateMonthGrid extends AsyncTask<Calendar, Integer, BaseAdapter> {
+	    
+	    private final Activity activityContext;
+	    GridView calendarEntries;
+	    private boolean showGotoToday = false;
+	    
+	    public PopulateMonthGrid(Activity activity) {
+	        this.activityContext = activity;
+	        calendarEntries = (GridView) activity.findViewById(R.id.calendarEntries);;
+	    }
+	    
+	    @Override
+        protected BaseAdapter doInBackground(Calendar... calendar) {
+	        
+	        Calendar now = Calendar.getInstance(Locale.getDefault());
+	        if(calendar[0].get(Calendar.YEAR) == now.get(Calendar.YEAR) &&
+	                calendar[0].get(Calendar.MONTH) == now.get(Calendar.MONDAY)) {
+	            showGotoToday = false;
+	        } else {
+	            showGotoToday = true;
+	        }
+	        
+	        MonthView monthView = new MonthView(calendar[0]);
+	        
+	        BaseAdapter gridAdapter = new RotaGridDateTimeAdapter(activityContext, monthView.getDates());
+	        gridAdapter.notifyDataSetChanged();
+	       
+	        return gridAdapter;
+	     }
+
+	     @Override
+        protected void onProgressUpdate(Integer... progress) {
+	         //setProgressPercent(progress[0]);
+	     }
+
+	     @Override
+        protected void onPostExecute(BaseAdapter result) {
+	         calendarEntries.setAdapter(result);
+	         
+	         TextView currentMonth = (TextView) activityContext.findViewById(R.id.currentMonth);
+	         currentMonth.setText(DateFormat.format(dateTemplate, selectedCalendar.getTime()));
+	         
+	         ImageButton todayButton = (ImageButton) activityContext.findViewById(R.id.activityToday); 
+	         if(showGotoToday) {
+	             todayButton.setVisibility(View.VISIBLE);
+	         }
+	         else {
+	             todayButton.setVisibility(View.INVISIBLE);
+	         }
+	         
+	         Log.d(LFBTAG, "gridPopulated");
+	     }
+	 }
 
 }

@@ -7,12 +7,11 @@
     <string name="action_exit">Exit</string>
     <string name="action_altlayout">Test Layout</string>
     
-    <string name="hello_widget_name">AAA Hello World Widget</string>
-    
-    <string name="hello_world">Hello world!</string>
+        
     <string name="cal_previous">Previous</string>
     <string name="cal_current">Current</string>
     <string name="cal_next">Next</string>
+    <string name="cal_todayDescription">goto Today</string>
     <string name="title_activity_help">HelpActivity</string>
     <string name="title_activity_cview_list_grid">CViewListGridActivity</string>
     
@@ -23,5 +22,7 @@
     <string name="city_name">San Francisco</string>
     <string name="today_label">Today</string>
     <string name="widget_title">LFB Rota</string>
+    
+    <string name="help_text">FB Rota offes a simle way to keep track of your rota and when you are scheduled to work in upcoming months</string>
 
 </resources>

@@ -1,12 +1,10 @@
 package com.smorgasbord.lfbrota.activities;
 
-import com.smorgasbord.lfbrota.R;
-import com.smorgasbord.lfbrota.R.layout;
-import com.smorgasbord.lfbrota.R.menu;
-
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
+
+import com.smorgasbord.lfbrota.R;
 
 public class HelpActivity extends Activity {
 

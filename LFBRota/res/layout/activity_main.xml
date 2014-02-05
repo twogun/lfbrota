@@ -40,10 +40,8 @@
             android:layout_weight="0.6"
             android:contentDescription="@string/cal_current"
             android:gravity="center"
-            android:text="@string/hello_world"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#FFFFFF" >
-
         </TextView>
         
         <View
