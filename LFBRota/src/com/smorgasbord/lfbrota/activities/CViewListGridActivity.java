@@ -49,10 +49,7 @@ public class CViewListGridActivity extends Activity implements OnGesturePerforme
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_monthview_grid);
-		
-	//	ImageButton todayButton = (ImageButton) this.findViewById(R.id.activityToday);
-	//	todayButton.setVisibility(View.INVISIBLE);
-		
+				
 		mLibrary = GestureLibraries.fromRawResource(this, R.raw.gestures);
 		   if (!mLibrary.load()) {
 		     finish();
